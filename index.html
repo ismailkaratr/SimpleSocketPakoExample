@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <table style="width:100%; border:1px solid gray">
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+    </table>
+    <div id="pointer" style="background:black;border-radius: 50%; width:30px; height: 30px;position:absolute;transform-origin: center center;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script>
+        webSocket = new WebSocket("ws://localhost:8080");
+        window.webSocket = webSocket;
+        window.pointer = document.querySelector("#pointer")
+        var node = document.querySelector('html');
+        
+        addEventListener("mousemove", (event) => {
+            pointer.style.left = `${event.x}px`;
+            pointer.style.top = `${event.y}px`;
+            if(webSocket.readyState == 1){
+                domtoimage.toPng(node)
+                .then(function (dataUrl) {
+                    compressData = pako.gzip(dataUrl);
+                    webSocket.send(compressData)
+                })
+                .catch(function (error) {
+                    console.error('oops, something went wrong!', error);
+                });           
+            }
+        });
+        
+    </script>
+</body>
+</html>

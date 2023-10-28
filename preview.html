@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body{
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <img src="" alt="" id="preview" width="100%">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script>
+        window.pointer = document.querySelector("#pointer")
+        webSocket = new WebSocket("ws://192.168.62.128:8080");
+        webSocket.onmessage = async function(event){
+            console.log(event)
+            decompress = pako.ungzip(await event.data.arrayBuffer());
+            document.querySelector('#preview').src = String.fromCharCode.apply(null, decompress);
+        };
+    </script>    
+</body>
+</html>
